@@ -29,3 +29,7 @@ imports.go
 *.log
 watgbridge.service
 .DS_Store
+
+# Nix
+/result
+.direnv/
