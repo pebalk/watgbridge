@@ -30,7 +30,7 @@ let
 
 in buildGoApplication rec {
   pname = "watgbridge";
-  version = "1.9.0";
+  version = "1.9.5";
 
   pwd = localSrc;
   src = localSrc;
@@ -47,7 +47,7 @@ in buildGoApplication rec {
   meta = with lib; rec {
     description = "A bridge between WhatsApp and Telegram written in Golang";
     homepage = "https://github.com/watgbridge/watgbridge";
-    changelog = "${homepage}/compare/watgbridge-v${version}...main";
+    changelog = "${homepage}/compare/v${version}...main";
     license = licenses.mit;
     mainProgram = "watgbridge";
   };
