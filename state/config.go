@@ -34,6 +34,8 @@ type Config struct {
 		SilentConfirmation  bool    `yaml:"silent_confirmation"`
 		EmojiConfirmation   bool    `yaml:"emoji_confirmation"`
 		SkipStartupMessage  bool    `yaml:"skip_startup_message"`
+		SpoilerViewOnce     bool    `yaml:"spoiler_as_viewonce"`
+		Reactions           bool    `yaml:"reactions"`
 	} `yaml:"telegram"`
 
 	WhatsApp struct {
