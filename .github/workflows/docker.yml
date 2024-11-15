@@ -1,37 +1,92 @@
-name: Build and Push Docker
+
+
+name: Build and Push Docker Image to Docker Hub
 
 on:
+  # Trigger the action manually from the UI
   workflow_dispatch:
-  release:
-    types: [released]
+  # Trigger the action when I create or push a `release/**` branch
+  # push:
+  #   branches:
+  #     - main
+
+# env:
+#   # Use docker.io for Docker Hub if empty
+#   REGISTRY: docker.io
+#   # github.repository as <account>/<repo>
+#   IMAGE_NAME: ${{ github.repository }}
+
+# jobs:
+#   build:
+#     runs-on: ubuntu-latest
+#     steps:
+#     - uses: actions/checkout@v4
+#     - name: Build the Docker image
+#       run: docker-compose build --no-cache --force-rm 
+#   test:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - uses: actions/checkout@v4
+#       - name: Test the Docker image
+#         run: docker-compose up -d 
+#   push_to_registry:
+#     name: Push Docker image to Docker Hub
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Check out the repo
+#         uses: actions/checkout@v3
+
+#       - name: Set up Docker Buildx
+#         uses: docker/setup-buildx-action@v2
+
+#       - name: Log in to Docker Hub
+#         uses: docker/login-action@v3
+#         with:
+#           username: ${{ secrets.DOCKER_USER }}
+#           password: ${{ secrets.DOCKER_TOKEN }}
+
+#       - name: Extract metadata (tags, labels) for Docker
+#         id: meta
+#         uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
+#         with:
+#           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+
+#       - name: Build and push Docker image
+#         uses: docker/build-push-action@v2
+#         with:
+#           context: "{{defaultContext}}"
+#           push: true
+#           tags: ${{ steps.meta.outputs.tags }}
+#           labels: ${{ steps.meta.outputs.labels }}
 
 env:
   DOCKER_IMAGE_NAME: ${{ github.repository }}
   DOCKER_REGISTRY_URL: docker.io
 
 jobs:
-
   build_docker_images:
+    # Job name that shows in the GitHub UI
     name: Build Docker Images
     runs-on: ubuntu-latest
 
     steps:
     - name: Checkout
       uses: actions/checkout@v4
+    # - uses: actions/checkout@v3
       with:
-        fetch-depth: 0
-
+        fetch-depth: 0 # Required due to the way Git works, without it this action won't be able to find any or the correct tags
     - name: 'Get Previous tag'
       id: previoustag
       uses: "WyriHaximus/github-action-get-previous-tag@v1"
-
+      # with:
+      #   fallback: 1.0.0 # Optional fallback tag to use when no tag can be found
+        #workingDirectory: another/path/where/a/git/repo/is/checked/out # Optional
     - name: Get the release version
       id: strip-branch-name
       run: |
         release_version=$(echo "${{ steps.previoustag.outputs.tag }}" | sed 's/v//g')
         echo "RELEASE_VERSION=$release_version" >> $GITHUB_ENV
       shell: bash
-
     - name: Set up QEMU
       uses: docker/setup-qemu-action@v3
 
@@ -72,17 +127,22 @@ jobs:
     #   run: |
     #     docker run --rm $DOCKER_IMAGE_NAME:test
 
-  -   name: Build and push
-      uses: docker/build-push-action@v6
-      with:
-        context: .
-        platforms: linux/amd64,linux/arm64
-        push: true
-        tags: 
-          - $DOCKER_IMAGE_NAME:latest
-          - $DOCKER_IMAGE_NAME:$RELEASE_VERSION
+  # -   name: Build and push
+  #     uses: docker/build-push-action@v6
+  #     with:
+  #       context: .
+  #       platforms: linux/amd64,linux/arm64
+  #       push: true
+  #       tags: 
+  #         - $DOCKER_IMAGE_NAME:latest
+  #         - $DOCKER_IMAGE_NAME:$RELEASE_VERSION
 
-    - name: Inspect
-      run: |
-        docker image inspect $DOCKER_IMAGE_NAME:latest  
-
+  # - name: Docker Hub Description
+  #   uses: peter-evans/dockerhub-description@v4
+  #   with:
+  #     username: ${{ secrets.DOCKERHUB_USERNAME }}
+  #     password: ${{ secrets.DOCKERHUB_PASSWORD }}
+  #     repository: peterevans/dockerhub-description
+        # short-description: ${{ github.event.repository.description }}
+        # enable-url-completion: true
+  #     readme-filepath: ./path/to/README.md
