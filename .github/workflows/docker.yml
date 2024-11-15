@@ -85,7 +85,7 @@ jobs:
     - name: Get the release version
       id: strip-branch-name
       run: |
-        release_version=$(echo "${{ steps.previoustag.outputs.tag }}" | sed 's/v//')
+        release_version=$(echo "${{ steps.previoustag.outputs.tag }}" | sed 's/v//g')
         echo "RELEASE_VERSION=${{ steps.previoustag.outputs.tag }}" >> $GITHUB_ENV
       shell: bash
 
