@@ -44,14 +44,17 @@ jobs:
         password: ${{ secrets.DOCKER_TOKEN }}
 
 
-  # -   name: Build and push
-  #     uses: docker/build-push-action@v6
-  #     with:
-  #       context: .
-  #       platforms: linux/amd64,linux/arm64
-  #       push: true
-  #       tags: 
-  #         - $DOCKER_IMAGE_NAME:latest
-  #         - $DOCKER_IMAGE_NAME:$RELEASE_VERSION
+    - name: Build and push
+      uses: docker/build-push-action@v6
+      with:
+        context: .
+        platforms: linux/amd64,linux/arm64
+        push: true
+        tags: 
+          - $DOCKER_IMAGE_NAME:latest
+          - $DOCKER_IMAGE_NAME:$RELEASE_VERSION
 
+    - name: Inspect
+      run: |
+        docker image inspect $DOCKER_IMAGE_NAME:latest  
 
