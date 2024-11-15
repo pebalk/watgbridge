@@ -1,0 +1,28 @@
+name: Merge upstream branches
+on:
+  schedule:
+    # - cron:  '1/10 * * * *'
+    workflow_dispatch:
+
+jobs:
+  merge:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Merge upstream
+        run: |
+          git config --global user.name 'pebalk'
+          git config --global user.email '47833480+pebalk@users.noreply.github.com'
+
+          git pull --unshallow  
+
+          git remote add upstream https://github.com/akshettrj/watgbridge.git
+          git fetch upstream
+
+          git checkout -b feature/x origin/feature/x
+          git merge --no-edit upstream/feature/x
+          git push origin feature/x
+
+          git checkout master
+          git merge --no-edit upstream/master
+          git push origin master
