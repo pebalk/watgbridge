@@ -12,7 +12,7 @@ jobs:
 
     steps:
       - uses: tgymnich/fork-sync@v2
-        # with:
-        #   owner: llvm
-        #   base: master
-        #   head: master
+        with:
+          owner: pebalk
+          base: main
+          head: main
