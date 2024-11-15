@@ -67,31 +67,43 @@ jobs:
   build_docker_images:
     # Job name that shows in the GitHub UI
     name: Build Docker Images
-#     # Runner to use
-#     runs-on: self-hosted
     runs-on: ubuntu-latest
 
     steps:
     - name: Checkout
       uses: actions/checkout@v4
 
-    - name: Dump env
-      run: env | sort
-    - name: Dump GitHub context
-      env:
-        GITHUB_CONTEXT: ${{ toJson(github) }}
-      run: echo "$GITHUB_CONTEXT"
-
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0 # Required due to the way Git works, without it this action won't be able to find any or the correct tags
+    - name: 'Get Previous tag'
+      id: previoustag
+      uses: "WyriHaximus/github-action-get-previous-tag@v1"
+      # with:
+      #   fallback: 1.0.0 # Optional fallback tag to use when no tag can be found
+        #workingDirectory: another/path/where/a/git/repo/is/checked/out # Optional
     - name: Get the release version
-      # i.e.: release/1.0.0 -> 1.0.0
       id: strip-branch-name
-      run: |
-        release_version=$(echo "${{ github.ref }}" | sed 's/refs\/heads\/.*\///')
-        echo "Building 1 release version $release_version"
-        release_version=$(echo "${{ github.event.release.tag_name }}")
-        echo "Building 2 release version $release_version"
-        echo "RELEASE_VERSION=$release_version" >> $GITHUB_ENV
+      run: echo "RELEASE_VERSION=${{ steps.previoustag.outputs.tag }}" >> $GITHUB_ENV
       shell: bash
+
+    # - name: Dump env
+    #   run: env | sort
+    # - name: Dump GitHub context
+    #   env:
+    #     GITHUB_CONTEXT: ${{ toJson(github) }}
+    #   run: echo "$GITHUB_CONTEXT"
+
+    # - name: Get the release version
+    #   # i.e.: release/1.0.0 -> 1.0.0
+    #   id: strip-branch-name
+    #   run: |
+    #     release_version=$(echo "${{ github.ref }}" | sed 's/refs\/heads\/.*\///')
+    #     echo "Building 1 release version $release_version"
+    #     release_version=$(echo "${{ github.event.release.tag_name }}")
+    #     echo "Building 2 release version $release_version"
+    #     echo "RELEASE_VERSION=$release_version" >> $GITHUB_ENV
+    #   shell: bash
 
     - name: Log in to Docker Hub
       uses: docker/login-action@v3
