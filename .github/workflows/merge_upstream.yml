@@ -1,8 +1,8 @@
 name: Merge upstream branches
 on:
-  schedule:
-    # - cron:  '1/10 * * * *'
-    workflow_dispatch:
+  # schedule:
+  #   - cron:  '1/10 * * * *'
+  workflow_dispatch:
 
 jobs:
   merge:
