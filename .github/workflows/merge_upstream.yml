@@ -5,6 +5,7 @@ on:
   workflow_dispatch:
 
 jobs:
+  
   merge:
     runs-on: ubuntu-latest
     steps:
