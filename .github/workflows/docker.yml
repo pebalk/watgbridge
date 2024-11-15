@@ -117,6 +117,36 @@ jobs:
         username: ${{ secrets.DOCKER_USER }}
         password: ${{ secrets.DOCKER_TOKEN }}
 
+    - name: Build and export to Docker
+      uses: docker/build-push-action@v6
+      with:
+        load: true
+        tags: $DOCKER_IMAGE_NAME:test
+
+    - name: Test
+      run: |
+        docker run --rm $DOCKER_IMAGE_NAME:test
+
+  # -   name: Build and push
+  #     uses: docker/build-push-action@v6
+  #     with:
+  #       context: .
+  #       platforms: linux/amd64,linux/arm64
+  #       push: true
+  #       tags: 
+  #         - $DOCKER_IMAGE_NAME:latest
+  #         - $DOCKER_IMAGE_NAME:$RELEASE_VERSION
+
+  # - name: Docker Hub Description
+  #   uses: peter-evans/dockerhub-description@v4
+  #   with:
+  #     username: ${{ secrets.DOCKERHUB_USERNAME }}
+  #     password: ${{ secrets.DOCKERHUB_PASSWORD }}
+  #     repository: peterevans/dockerhub-description
+        # short-description: ${{ github.event.repository.description }}
+        # enable-url-completion: true
+  #     readme-filepath: ./path/to/README.md
+
     # # Build the Docker image
     # - name: Build the Docker image
     #   run: docker buildx build --platform linux/amd64,linux/arm64 --tag $DOCKER_IMAGE_NAME:$RELEASE_VERSION --file Dockerfile
@@ -146,6 +176,6 @@ jobs:
     # - name: Remove the local image
     #   run: docker rmi $DOCKER_IMAGE_NAME:$RELEASE_VERSION
 
-    - name: Prune Docker
-      run: docker system prune -a -f
-      
+    # - name: Prune Docker
+    #   run: docker system prune -a -f
+    #   
