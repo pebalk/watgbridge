@@ -72,8 +72,7 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v4
-
-    - uses: actions/checkout@v3
+    # - uses: actions/checkout@v3
       with:
         fetch-depth: 0 # Required due to the way Git works, without it this action won't be able to find any or the correct tags
     - name: 'Get Previous tag'
@@ -88,6 +87,11 @@ jobs:
         release_version=$(echo "${{ steps.previoustag.outputs.tag }}" | sed 's/v//g')
         echo "RELEASE_VERSION=$release_version" >> $GITHUB_ENV
       shell: bash
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v3
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
 
     # - name: Dump env
     #   run: env | sort
@@ -113,34 +117,35 @@ jobs:
         username: ${{ secrets.DOCKER_USER }}
         password: ${{ secrets.DOCKER_TOKEN }}
 
-    # Build the Docker image
-    - name: Build the Docker image
-      run: docker buildx build --platform linux/amd64,linux/arm64 --tag $DOCKER_IMAGE_NAME:$RELEASE_VERSION --file Dockerfile
-      # run: docker build . --file Dockerfile --tag $DOCKER_IMAGE_NAME:$RELEASE_VERSION
+    # # Build the Docker image
+    # - name: Build the Docker image
+    #   run: docker buildx build --platform linux/amd64,linux/arm64 --tag $DOCKER_IMAGE_NAME:$RELEASE_VERSION --file Dockerfile
+    #   # run: docker build . --file Dockerfile --tag $DOCKER_IMAGE_NAME:$RELEASE_VERSION
 
-    # Tag the Docker Images
-    - name: Tag the image for the private registry $DOCKER_REGISTRY_URL
-      run: docker tag $DOCKER_IMAGE_NAME:$RELEASE_VERSION $DOCKER_REGISTRY_URL/$DOCKER_IMAGE_NAME:$RELEASE_VERSION
+    # # Tag the Docker Images
+    # - name: Tag the image for the private registry $DOCKER_REGISTRY_URL
+    #   run: docker tag $DOCKER_IMAGE_NAME:$RELEASE_VERSION $DOCKER_REGISTRY_URL/$DOCKER_IMAGE_NAME:$RELEASE_VERSION
 
-    - name: Create a latest image as well
-      run: docker tag $DOCKER_IMAGE_NAME:$RELEASE_VERSION $DOCKER_REGISTRY_URL/$DOCKER_IMAGE_NAME:latest
+    # - name: Create a latest image as well
+    #   run: docker tag $DOCKER_IMAGE_NAME:$RELEASE_VERSION $DOCKER_REGISTRY_URL/$DOCKER_IMAGE_NAME:latest
 
-    # Push the images to the registry
-    - name: Push the Docker image with version number
-      run: docker push $DOCKER_REGISTRY_URL/$DOCKER_IMAGE_NAME:$RELEASE_VERSION
+    # # Push the images to the registry
+    # - name: Push the Docker image with version number
+    #   run: docker push $DOCKER_REGISTRY_URL/$DOCKER_IMAGE_NAME:$RELEASE_VERSION
 
-    - name: Push the latest tag
-      run: docker push $DOCKER_REGISTRY_URL/$DOCKER_IMAGE_NAME:latest
+    # - name: Push the latest tag
+    #   run: docker push $DOCKER_REGISTRY_URL/$DOCKER_IMAGE_NAME:latest
 
-    # Remove the local images
-    - name: Remove the Docker image with version number
-      run: docker rmi $DOCKER_REGISTRY_URL/$DOCKER_IMAGE_NAME:$RELEASE_VERSION
+    # # Remove the local images
+    # - name: Remove the Docker image with version number
+    #   run: docker rmi $DOCKER_REGISTRY_URL/$DOCKER_IMAGE_NAME:$RELEASE_VERSION
 
-    - name: Remove the Docker image with latest tag
-      run: docker rmi $DOCKER_REGISTRY_URL/$DOCKER_IMAGE_NAME:latest
+    # - name: Remove the Docker image with latest tag
+    #   run: docker rmi $DOCKER_REGISTRY_URL/$DOCKER_IMAGE_NAME:latest
 
-    - name: Remove the local image
-      run: docker rmi $DOCKER_IMAGE_NAME:$RELEASE_VERSION
+    # - name: Remove the local image
+    #   run: docker rmi $DOCKER_IMAGE_NAME:$RELEASE_VERSION
 
     - name: Prune Docker
       run: docker system prune -a -f
+      
