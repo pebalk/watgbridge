@@ -9,7 +9,6 @@ on:
 
 env:
   DOCKER_IMAGE_NAME: ${{ github.repository }}
-  DOCKER_REGISTRY_URL: docker.io
 
 jobs:
   build_docker_images:
