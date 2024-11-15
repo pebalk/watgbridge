@@ -80,7 +80,9 @@ jobs:
       id: strip-branch-name
       run: |
         release_version=$(echo "${{ github.ref }}" | sed 's/refs\/heads\/.*\///')
-        echo "Building release version $release_version"
+        echo "Building 1 release version $release_version"
+        release_version=$(echo "$${{ github.event.release.tag_name }}")
+        echo "Building 2 release version $release_version"
         echo "RELEASE_VERSION=$release_version" >> $GITHUB_ENV
       shell: bash
 
