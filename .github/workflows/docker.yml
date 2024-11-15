@@ -75,6 +75,13 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
 
+    - name: Dump env
+      run: env | sort
+    - name: Dump GitHub context
+      env:
+        GITHUB_CONTEXT: ${{ toJson(github) }}
+      run: echo "$GITHUB_CONTEXT"
+
     - name: Get the release version
       # i.e.: release/1.0.0 -> 1.0.0
       id: strip-branch-name
