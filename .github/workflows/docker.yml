@@ -84,7 +84,9 @@ jobs:
         #workingDirectory: another/path/where/a/git/repo/is/checked/out # Optional
     - name: Get the release version
       id: strip-branch-name
-      run: echo "RELEASE_VERSION=${{ steps.previoustag.outputs.tag }}" >> $GITHUB_ENV
+      run: |
+        release_version=$(echo "${{ steps.previoustag.outputs.tag }}" | sed 's/v//')
+        echo "RELEASE_VERSION=${{ steps.previoustag.outputs.tag }}" >> $GITHUB_ENV
       shell: bash
 
     # - name: Dump env
