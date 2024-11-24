@@ -14,7 +14,10 @@ let
 in
 {
   options = {
-    services.watgbridge = import ../commonOptions.nix { inherit lib package; forNixos = true; };
+    services.watgbridge = import ../commonOptions.nix {
+      inherit lib package;
+      forNixos = true;
+    };
   };
 
   config = mkIf cfg.enable {
@@ -25,6 +28,6 @@ in
       }
     ];
 
-    environment.systemPackages = [ cfg.package ];
+    environment.systemPackages = [ cfg.commonSettings.package or package ];
   };
 }
