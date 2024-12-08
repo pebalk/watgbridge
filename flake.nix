@@ -57,9 +57,6 @@
           watgbridge = (pkgs.callPackage ./nix/pkgs/watgbridge-dev.nix { inherit nix-filter; });
         };
 
-        nixosModules.default = import ./nix/modules/nixos self;
-        homeManagerModules.default = import ./nix/modules/home-manager self;
-
       }
     );
 
