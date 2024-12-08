@@ -13,6 +13,8 @@ jobs:
     steps:
       - uses: tgymnich/fork-sync@v2
         with:
+          token: ${{ secrets.PERSONAL_TOKEN }}
           owner: pebalk
           base: main
           head: main
+          auto_approve: true
