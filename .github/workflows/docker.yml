@@ -58,7 +58,7 @@ jobs:
         push: true
         tags: ${{ env.DOCKER_IMAGE_NAME }}:${{ env.RELEASE_VERSION }}
 
-    - name: Inspect
-      run: |
-        docker image inspect ${{ env.DOCKER_IMAGE_NAME }}:latest  
+    # - name: Inspect
+    #   run: |
+    #     docker image inspect ${{ env.DOCKER_IMAGE_NAME }}:latest  
 
