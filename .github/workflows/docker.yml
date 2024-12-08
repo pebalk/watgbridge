@@ -42,16 +42,21 @@ jobs:
         username: ${{ secrets.DOCKER_USER }}
         password: ${{ secrets.DOCKER_TOKEN }}
 
-
-    - name: Build and push
+    - name: Build and push latest
       uses: docker/build-push-action@v6
       with:
         context: .
         platforms: linux/amd64,linux/arm64
         push: true
-        tags: 
-          - $DOCKER_IMAGE_NAME:latest
-          - $DOCKER_IMAGE_NAME:$RELEASE_VERSION
+        tags: $DOCKER_IMAGE_NAME:latest
+
+    - name: Build and push release
+      uses: docker/build-push-action@v6
+      with:
+        context: .
+        platforms: linux/amd64,linux/arm64
+        push: true
+        tags: $DOCKER_IMAGE_NAME:$RELEASE_VERSION
 
     - name: Inspect
       run: |
