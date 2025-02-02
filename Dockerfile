@@ -8,7 +8,7 @@ RUN go mod download all
 COPY . ./
 RUN go build
 
-FROM bookworm-20250113-slim
+FROM bookworm-slim
 RUN apt-get update && apt-get install -y --no-install-recommends tzdata libwebp-tools ffmpeg imagemagick bash
 WORKDIR /app
 COPY --from=build /go/src/watgbridge/watgbridge .
