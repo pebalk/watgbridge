@@ -1,15 +1,15 @@
-FROM golang:1.23.5-bookworm AS build
+FROM golang:1.22.3-alpine3.20 AS build
 
-RUN apt-get update && apt-get install -y --no-install-recommends gcc g++ make git libwebp-tools ffmpeg imagemagick
+RUN apk --no-cache add gcc g++ make git libwebp-tools ffmpeg imagemagick
 WORKDIR /go/src/watgbridge
 COPY go.mod go.sum entry.sh ./
-RUN go mod download all
+RUN go mod download
 
 COPY . ./
 RUN go build
 
-FROM bookworm-slim
-RUN apt-get update && apt-get install -y --no-install-recommends tzdata libwebp-tools ffmpeg imagemagick bash
+FROM alpine:3.20
+RUN apk --no-cache add tzdata libwebp-tools ffmpeg imagemagick bash
 WORKDIR /app
 COPY --from=build /go/src/watgbridge/watgbridge .
 COPY --from=build /go/src/watgbridge/entry.sh /entry.sh
