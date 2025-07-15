@@ -1,6 +1,6 @@
 module watgbridge
 
-go 1.23
+go 1.23.11
 
 toolchain go1.24.4
 
